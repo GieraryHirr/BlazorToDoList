@@ -1,6 +1,6 @@
 ﻿@page "/"
-
-@attribute [Microsoft.AspNetCore.Authorization.Authorize(Policy = "AuthenticatedUser")]
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize(Policy = "AuthenticatedUser")]
 
 <PageTitle>Home</PageTitle>
 

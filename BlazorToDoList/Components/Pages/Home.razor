@@ -1,5 +1,6 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Authorization
+@using BlazorToDoList.Enums
 @attribute [Authorize(Policy = "AuthenticatedUser")]
 
 <PageTitle>Home</PageTitle>
@@ -46,10 +47,10 @@ Welcome to your new app.
     protected override void OnInitialized()
     {
         Codes.HashingHandler hh = new("H1 Oskar");
-        _md5 = hh.Md5Hashing();
-        _sha256 = hh.Sha256Hashing();
-        _hmac256 = hh.Hmac256Hashing();
-        _pbkf2 = hh.Pbkbf2Hashing("Salt", "SHA256");
+        _md5 = hh.Md5Hashing(HashFormat.Base64);
+        _sha256 = hh.Sha256Hashing(HashFormat.Utf);
+        _hmac256 = hh.Hmac256Hashing(HashFormat.Hex);
+        _pbkf2 = hh.Pbkbf2Hashing("Salt", "SHA256", HashFormat.ByteString);
         _bcryptHashed = Codes.HashingHandler.BCryptHashing("H1 Oskar");
         _bcryptVerified = Codes.HashingHandler.BCryptVerify("H1 Oskar", _bcryptHashed);
     }

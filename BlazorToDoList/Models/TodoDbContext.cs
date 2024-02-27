@@ -29,9 +29,7 @@ public partial class TodoDbContext : DbContext
         {
             entity.ToTable("Cpr");
 
-            entity.Property(e => e.CprNo)
-                .HasMaxLength(12)
-                .IsFixedLength();
+            entity.Property(e => e.CprNo).HasMaxLength(500);
             entity.Property(e => e.User).HasMaxLength(500);
         });
 

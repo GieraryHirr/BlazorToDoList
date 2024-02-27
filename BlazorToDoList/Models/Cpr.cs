@@ -9,5 +9,5 @@ public partial class Cpr
 
     public string User { get; set; } = null!;
 
-    public string CprNo { get; set; } = null!;
+    public string? CprNo { get; set; }
 }

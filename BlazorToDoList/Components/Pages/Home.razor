@@ -1,6 +1,11 @@
 ﻿@page "/"
+
 @using Microsoft.AspNetCore.Authorization
 @using BlazorToDoList.Enums
+@using BlazorToDoList.Services
+
+@inject IToDoService ToDoService
+@inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize(Policy = "AuthenticatedUser")]
 
 <PageTitle>Home</PageTitle>
@@ -38,7 +43,10 @@
     <p>BCrypt verification - @_bcryptVerified</p>
 }
 
-Welcome to your new app.
+<h1>Username - @Username</h1>
+
+<input type="number" @bind="_inputCpr" />
+<button @onclick="Submit">Submit</button>
 
 @code {
     private string? _md5;
@@ -48,10 +56,13 @@ Welcome to your new app.
     private string? _pbkf2Array;
     private string? _bcryptHashed;
     private bool? _bcryptVerified;
+    private string _inputCpr;
 
+    public string Username { get; set; }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+
         Codes.HashingHandler hh = new("H1 Oskar");
         _md5 = hh.Md5Hashing(HashFormat.Base64);
         _sha256 = hh.Sha256Hashing(HashFormat.Utf);
@@ -60,5 +71,14 @@ Welcome to your new app.
         _pbkf2Array = hh.Pbkbf2Hashing("Salt", "SHA256", HashFormat.ByteArray);
         _bcryptHashed = Codes.HashingHandler.BCryptHashing("H1 Oskar");
         _bcryptVerified = Codes.HashingHandler.BCryptVerify("H1 Oskar", _bcryptHashed);
+
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        Username = user.Identity?.Name;
+    }
+
+    private async Task Submit()
+    {
+        ToDoService.AddCpr(Username, _inputCpr);
     }
 }

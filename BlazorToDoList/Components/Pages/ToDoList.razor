@@ -1,0 +1,60 @@
+﻿@page "/to-do-list"
+
+@using Microsoft.AspNetCore.Authorization
+@using BlazorToDoList.Services
+
+@inject IToDoService ToDoService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@attribute [Authorize(Policy = "AuthenticatedUser")]
+
+
+@if(Username != null)
+{
+    <h1>User - @Username</h1>
+}
+
+@if (!string.IsNullOrEmpty(Cpr))
+{
+    <p>CPR - @Cpr</p>
+}
+
+@if (string.IsNullOrEmpty(Cpr))
+{
+    <input type="number" @bind="_inputCpr" />
+    <button @onclick="SubmitCpr">Submit cpr</button>
+}
+
+@if (!string.IsNullOrEmpty(Cpr))
+{
+    <input type="text" @bind="_inputTask" />
+    <button @onclick="SubmitTask">Submit task</button>
+}
+
+@code {
+    private string _inputCpr;
+    private string _inputTask;
+    public string Username { get; set; }
+    public string Cpr { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        Username = user.Identity?.Name;
+        if(Username != null)
+        {
+            Cpr = ToDoService.GetCpr(Username);
+        }
+
+    }
+
+    private async Task SubmitCpr()
+    {
+        Cpr = await ToDoService.AddCpr(Username, _inputCpr);
+    }
+
+    private async Task SubmitTask()
+    {
+        ToDoService.AddTask(Username, _inputTask);
+    }
+}

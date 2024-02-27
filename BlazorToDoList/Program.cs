@@ -2,6 +2,7 @@ using BlazorToDoList.Components;
 using BlazorToDoList.Components.Account;
 using BlazorToDoList.Data;
 using BlazorToDoList.Models;
+using BlazorToDoList.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+builder.Services.AddScoped<IToDoService, ToDoService>();
 
 builder.Services.AddAuthentication(options =>
     {

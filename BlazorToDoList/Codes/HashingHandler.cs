@@ -54,7 +54,7 @@ public class HashingHandler(string textToHash)
             HashFormat.Utf => Encoding.UTF8.GetString(hashedValue),
             HashFormat.Hex => BitConverter.ToString(hashedValue).Replace("-", string.Empty),
             HashFormat.ByteString => string.Join(" ", hashedValue.Select(b => b.ToString())),
-            HashFormat.ByteArray => string.Join(",", hashedValue),
+            HashFormat.ByteArray => string.Join(", ", hashedValue),
             _ => throw new ArgumentException("Invalid output format specified.", nameof(hashFormat))
         };
 }

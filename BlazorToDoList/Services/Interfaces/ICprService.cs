@@ -2,5 +2,5 @@
 public interface ICprService
 {
     Task<string?> GetCprNo(string username);
-    Task<string> Add(string username, string cprNo);
+    Task<string?> Add(string username, string cprNo);
 }

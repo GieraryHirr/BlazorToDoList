@@ -2,6 +2,7 @@
 using BlazorToDoList.Repositories.Interfaces;
 using BlazorToDoList.Handlers;
 using BlazorToDoList.Services.Interfaces;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace BlazorToDoList.Services;
 
@@ -13,17 +14,21 @@ public class CprService(ICprRepository cprRepository) : ICprService
         return cpr?.CprNo;
     }
 
-    public async Task<string> Add(string username, string cprNo)
+    public async Task<string?> Add(string username, string cprNo)
     {
-        var hashedCpr = Md5HashingHandler.Hash(cprNo);
+        var newCprNoHashed = Md5HashingHandler.Hash(cprNo);
 
-        var cpr = new Cpr
+        var cpr = await cprRepository.GetCprByUsername(username);
+        if (cpr != null )
+            return cpr.CprNo == newCprNoHashed ? cpr.CprNo : null;
+
+        var newCpr = new Cpr
         {
-            CprNo = hashedCpr,
+            CprNo = newCprNoHashed,
             User = username
         };
 
-        await cprRepository.Add(cpr);
-        return cpr.CprNo;
+        await cprRepository.Add(newCpr);
+        return newCpr.CprNo;
     }
 }

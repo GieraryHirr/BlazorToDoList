@@ -21,14 +21,18 @@
 
 @if (Cpr == null)
 {
-    <input type="number" @bind="_inputCpr" />
-    <button @onclick="SubmitCpr">Submit cpr</button>
+    <input type="number" placeholder="CPR" @bind="_inputCpr" />
+    <button @onclick="SubmitCpr">Submit</button>
+    @if (CprErrorMessage != null)
+    {
+        <p style="color: red">@CprErrorMessage!</p>
+    }
 }
 
 @if (Cpr != null)
 {
-    <input type="text" @bind="_inputTask" />
-    <button @onclick="SubmitTask">Submit task</button>
+    <input type="text" placeholder="Item" @bind="_inputTask" />
+    <button @onclick="SubmitTask">Submit</button>
 }
 
 @code {
@@ -36,19 +40,29 @@
     private string? _inputTask;
     public string? Username { get; set; }
     public string? Cpr { get; set; }
+    public string? CprErrorMessage { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         Username = user.Identity?.Name;
-        if(Username != null)
-        {
-            Cpr = await CprService.GetCprNo(Username);
-        }
     }
 
-    private async Task SubmitCpr() => Cpr = await CprService.Add(Username, _inputCpr);
+    private async Task SubmitCpr()
+    {
+        if (Username != null && _inputCpr != null)
+        {
+            Cpr = await CprService.Add(Username, _inputCpr);
 
-    private async Task SubmitTask() => await ToDoService.AddTask(Username, _inputTask);
+            CprErrorMessage = Cpr == null ? "You already have registered CPR. Please submit correct one" : null;
+        }
+
+    }
+
+    private async Task SubmitTask()
+    {
+        if (Username != null && _inputTask != null)
+            await ToDoService.AddTask(Username, _inputTask);
+    }
 }

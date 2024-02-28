@@ -1,9 +1,10 @@
 ﻿@page "/to-do-list"
 
 @using Microsoft.AspNetCore.Authorization
-@using BlazorToDoList.Services
+@using BlazorToDoList.Services.Interfaces
 
 @inject IToDoService ToDoService
+@inject ICprService CprService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @attribute [Authorize(Policy = "AuthenticatedUser")]
 
@@ -13,28 +14,28 @@
     <h1>User - @Username</h1>
 }
 
-@if (!string.IsNullOrEmpty(Cpr))
+@if (Cpr != null)
 {
     <p>CPR - @Cpr</p>
 }
 
-@if (string.IsNullOrEmpty(Cpr))
+@if (Cpr == null)
 {
     <input type="number" @bind="_inputCpr" />
     <button @onclick="SubmitCpr">Submit cpr</button>
 }
 
-@if (!string.IsNullOrEmpty(Cpr))
+@if (Cpr != null)
 {
     <input type="text" @bind="_inputTask" />
     <button @onclick="SubmitTask">Submit task</button>
 }
 
 @code {
-    private string _inputCpr;
-    private string _inputTask;
-    public string Username { get; set; }
-    public string Cpr { get; set; }
+    private string? _inputCpr;
+    private string? _inputTask;
+    public string? Username { get; set; }
+    public string? Cpr { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -43,18 +44,11 @@
         Username = user.Identity?.Name;
         if(Username != null)
         {
-            Cpr = await ToDoService.GetCpr(Username);
+            Cpr = await CprService.GetCprNo(Username);
         }
-
     }
 
-    private async Task SubmitCpr()
-    {
-        Cpr = await ToDoService.AddCpr(Username, _inputCpr);
-    }
+    private async Task SubmitCpr() => Cpr = await CprService.Add(Username, _inputCpr);
 
-    private async Task SubmitTask()
-    {
-        ToDoService.AddTask(Username, _inputTask);
-    }
+    private async Task SubmitTask() => await ToDoService.AddTask(Username, _inputTask);
 }

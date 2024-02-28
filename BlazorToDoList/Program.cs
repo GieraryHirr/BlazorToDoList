@@ -3,7 +3,10 @@ using BlazorToDoList.Components;
 using BlazorToDoList.Components.Account;
 using BlazorToDoList.Data;
 using BlazorToDoList.Models;
+using BlazorToDoList.Repositories;
+using BlazorToDoList.Repositories.Interfaces;
 using BlazorToDoList.Services;
+using BlazorToDoList.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -20,7 +23,15 @@ builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 builder.Services.AddSingleton<SymetricEncryptionHandler>();
 builder.Services.AddSingleton<AsymtericEncryptionHandler>();
+
+
+builder.Services.AddScoped<IToDoRepository, ToDoRepository>();
+builder.Services.AddScoped<ICprRepository, CprRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 builder.Services.AddScoped<IToDoService, ToDoService>();
+builder.Services.AddScoped<ICprService, CprService>();
+
 
 builder.Services.AddAuthentication(options =>
     {

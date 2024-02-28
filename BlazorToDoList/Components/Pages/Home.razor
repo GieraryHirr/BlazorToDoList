@@ -1,11 +1,8 @@
 ﻿@page "/"
 
 @using Microsoft.AspNetCore.Authorization
-@using BlazorToDoList.Enums
 @using BlazorToDoList.Codes
-@using BlazorToDoList.Services.Interfaces
 
-@inject IToDoService ToDoService
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject SymetricEncryptionHandler SymetricEncryptionHandler
 @inject AsymtericEncryptionHandler AsymetricEncryptionHandler
@@ -13,39 +10,6 @@
 @attribute [Authorize(Policy = "AuthenticatedUser")]
 
 <PageTitle>Home</PageTitle>
-
-@if (_md5 != null)
-{
-
-    <p>MD5 - @_md5</p>
-}
-@if (_sha256 != null)
-{
-    <p>SHA256 - @_sha256</p>
-}
-
-@if (_hmac256 != null)
-{
-    <p>HMAC256 - @_hmac256</p>
-}
-@if (_pbkf2String != null)
-{
-    <p>PBKBF2 String - @_pbkf2String</p>
-}
-@if (_pbkf2Array != null)
-{
-    <p>PBKBF2 Arary - @_pbkf2Array</p>
-}
-
-@if (_bcryptHashed != null)
-{
-    <p>BCrypt - @_bcryptHashed</p>
-}
-
-@if (_bcryptVerified != null)
-{
-    <p>BCrypt verification - @_bcryptVerified</p>
-}
 
 @if (_symetricEncryptionOutput != null)
 {
@@ -92,15 +56,6 @@
         _symetricDecryptionOutput = SymetricEncryptionHandler.DecryptSymetrisk(_symetricEncryptionOutput);
         _asymetricEncryptionOutput = AsymetricEncryptionHandler.EncryptAsymteric("Hi Oskar");
         _asymetricDecryptionOutput = AsymetricEncryptionHandler.DencryptAsymteric(_asymetricEncryptionOutput);
-
-        HashingHandler hh = new("H1 Oskar");
-        _md5 = hh.Md5Hashing(HashFormat.Base64);
-        _sha256 = hh.Sha256Hashing(HashFormat.Utf);
-        _hmac256 = hh.Hmac256Hashing(HashFormat.Hex);
-        _pbkf2String = hh.Pbkbf2Hashing("Salt", "SHA256", HashFormat.ByteString);
-        _pbkf2Array = hh.Pbkbf2Hashing("Salt", "SHA256", HashFormat.ByteArray);
-        _bcryptHashed = Codes.HashingHandler.BCryptHashing("H1 Oskar");
-        _bcryptVerified = Codes.HashingHandler.BCryptVerify("H1 Oskar", _bcryptHashed);
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;

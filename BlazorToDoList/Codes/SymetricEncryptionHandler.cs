@@ -2,14 +2,9 @@
 using Microsoft.AspNetCore.DataProtection;
 
 namespace BlazorToDoList.Codes;
-public class EncryptionHandler
+public class SymetricEncryptionHandler(IDataProtectionProvider dataProtectionProvider)
 {
-    private readonly IDataProtector _dataProtector;
-
-    public EncryptionHandler(IDataProtectionProvider dataProtectionProvider)
-    {
-        _dataProtector = dataProtectionProvider.CreateProtector("OskarProtector");
-    }
+    private readonly IDataProtector _dataProtector = dataProtectionProvider.CreateProtector("OskarProtector");
 
     public string EncryptSymetrisk(string textToEncrypt) => 
         _dataProtector.Protect(textToEncrypt);

@@ -77,7 +77,6 @@ public class ToDoService(
     private string Md5Unhashing(string hashedCpr)
     {
         var byteValue = Convert.FromBase64String(hashedCpr);
-        var originalValue = Encoding.ASCII.GetString(byteValue);
-        return originalValue;
+        return Encoding.ASCII.GetString(byteValue);
     }
 }

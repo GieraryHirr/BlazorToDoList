@@ -7,7 +7,8 @@
 
 @inject IToDoService ToDoService
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject EncryptionHandler EncryptionHandler
+@inject SymetricEncryptionHandler SymetricEncryptionHandler
+@inject AsymtericEncryptionHandler AsymetricEncryptionHandler
 
 @attribute [Authorize(Policy = "AuthenticatedUser")]
 
@@ -46,14 +47,24 @@
     <p>BCrypt verification - @_bcryptVerified</p>
 }
 
-@if (_encryptionOutput != null)
+@if (_symetricEncryptionOutput != null)
 {
-    <p>Encryption - @_encryptionOutput</p>
+    <p>Symetric encryption - @_symetricEncryptionOutput</p>
 }
 
-@if (_decryptionOutput != null)
+@if (_symetricDecryptionOutput != null)
 {
-    <p>Decryption - @_decryptionOutput</p>
+    <p>Symetric decryption - @_symetricDecryptionOutput</p>
+}
+
+@if (_asymetricEncryptionOutput != null)
+{
+    <p>Asymetric encryption - @_asymetricEncryptionOutput</p>
+}
+
+@if (_asymetricDecryptionOutput != null)
+{
+    <p>Asymetric decryption - @_asymetricDecryptionOutput</p>
 }
 
 <h1>Username - @Username</h1>
@@ -67,16 +78,20 @@
     private string? _bcryptHashed;
     private bool? _bcryptVerified;
     private string _inputCpr;
-    private string _encryptionOutput;
-    private string _decryptionOutput;
+    private string _symetricEncryptionOutput;
+    private string _symetricDecryptionOutput;
+    private string _asymetricEncryptionOutput;
+    private string _asymetricDecryptionOutput;
 
 
     public string Username { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        _encryptionOutput = EncryptionHandler.EncryptSymetrisk("Hi Oskar");
-        _decryptionOutput = EncryptionHandler.DecryptSymetrisk(_encryptionOutput);
+        _symetricEncryptionOutput = SymetricEncryptionHandler.EncryptSymetrisk("Hi Oskar");
+        _symetricDecryptionOutput = SymetricEncryptionHandler.DecryptSymetrisk(_symetricEncryptionOutput);
+        _asymetricEncryptionOutput = AsymetricEncryptionHandler.EncryptAsymteric("Hi Oskar");
+        _asymetricDecryptionOutput = AsymetricEncryptionHandler.DencryptAsymteric(_asymetricEncryptionOutput);
 
         HashingHandler hh = new("H1 Oskar");
         _md5 = hh.Md5Hashing(HashFormat.Base64);

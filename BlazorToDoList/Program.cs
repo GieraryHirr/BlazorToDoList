@@ -1,3 +1,4 @@
+using BlazorToDoList.Codes;
 using BlazorToDoList.Components;
 using BlazorToDoList.Components.Account;
 using BlazorToDoList.Data;
@@ -17,6 +18,7 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
+builder.Services.AddSingleton<EncryptionHandler>();
 builder.Services.AddScoped<IToDoService, ToDoService>();
 
 builder.Services.AddAuthentication(options =>

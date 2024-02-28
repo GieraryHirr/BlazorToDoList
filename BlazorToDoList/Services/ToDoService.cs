@@ -1,33 +1,33 @@
 ﻿using BlazorToDoList.Data;
 using BlazorToDoList.Enums;
 using BlazorToDoList.Models;
-using System.Runtime.ConstrainedExecution;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorToDoList.Services;
 
 public interface IToDoService
 {
-    string GetCpr(string username);
+    Task<string> GetCpr(string username);
     List<TodoList> GetTasks(int id);
     Task<string> AddCpr (string username, string cpr);
     Task AddTask (string username, string task);
 }
-public class ToDoService : IToDoService
+public class ToDoService(
+    ApplicationDbContext applicationDbContext,
+    TodoDbContext todoDbContext)
+    : IToDoService
 {
-    private readonly ApplicationDbContext _applicationDbContext;
-    private readonly TodoDbContext _todoDbContext;
-
-    public ToDoService(ApplicationDbContext applicationDbContext, 
-        TodoDbContext todoDbContext)
+    public async Task<string> GetCpr(string username)
     {
-        _applicationDbContext = applicationDbContext;
-        _todoDbContext = todoDbContext;
+        if (!todoDbContext.Cprs.Any(c => c.User == username)) return "";
+        {
+            var cpr = await todoDbContext.Cprs.FirstOrDefaultAsync(c => c.User == username);
+            return cpr?.CprNo == null ? "" : Md5Unhashing(cpr.CprNo);
+        }
     }
-    public string GetCpr(string username) =>
-        _todoDbContext.Cprs.Any(c => c.User == username) ? 
-            _todoDbContext.Cprs.FirstOrDefault(c => c.User == username)?.CprNo : "";
+        
 
     public List<TodoList> GetTasks(int id)
     {
@@ -44,19 +44,18 @@ public class ToDoService : IToDoService
             User = username
         };
 
-        _todoDbContext.Cprs.Add(cprToAdd);
-        await _todoDbContext.SaveChangesAsync();
+        todoDbContext.Cprs.Add(cprToAdd);
+        await todoDbContext.SaveChangesAsync();
         return hashedCpr;
     }
 
     public async Task AddTask(string username, string task)
     {
-        var user = _applicationDbContext.
+        var user = applicationDbContext.
             Users
             .FirstOrDefault(u => u.UserName == username);
 
         if (user == null) return;
-
 
         var taskToAdd = new TodoList
         {
@@ -64,8 +63,8 @@ public class ToDoService : IToDoService
             User = user.UserName!
         };
 
-        _todoDbContext.TodoLists.Add(taskToAdd);
-        await _todoDbContext.SaveChangesAsync();
+        todoDbContext.TodoLists.Add(taskToAdd);
+        await todoDbContext.SaveChangesAsync();
     }
 
     private string Md5Hashing(string valueToConvert)
@@ -74,5 +73,11 @@ public class ToDoService : IToDoService
         var byteValue = Encoding.ASCII.GetBytes(valueToConvert);
         var hashedValue = MD5.Create().ComputeHash(byteValue);
         return Convert.ToBase64String(hashedValue);
+    }
+    private string Md5Unhashing(string hashedCpr)
+    {
+        var byteValue = Convert.FromBase64String(hashedCpr);
+        var originalValue = Encoding.ASCII.GetString(byteValue);
+        return originalValue;
     }
 }

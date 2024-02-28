@@ -3,9 +3,12 @@
 @using Microsoft.AspNetCore.Authorization
 @using BlazorToDoList.Enums
 @using BlazorToDoList.Services
+@using BlazorToDoList.Codes
 
 @inject IToDoService ToDoService
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject EncryptionHandler EncryptionHandler
+
 @attribute [Authorize(Policy = "AuthenticatedUser")]
 
 <PageTitle>Home</PageTitle>
@@ -43,10 +46,17 @@
     <p>BCrypt verification - @_bcryptVerified</p>
 }
 
-<h1>Username - @Username</h1>
+@if (_encryptionOutput != null)
+{
+    <p>Encryption - @_encryptionOutput</p>
+}
 
-<input type="number" @bind="_inputCpr" />
-<button @onclick="Submit">Submit</button>
+@if (_decryptionOutput != null)
+{
+    <p>Decryption - @_decryptionOutput</p>
+}
+
+<h1>Username - @Username</h1>
 
 @code {
     private string? _md5;
@@ -57,13 +67,18 @@
     private string? _bcryptHashed;
     private bool? _bcryptVerified;
     private string _inputCpr;
+    private string _encryptionOutput;
+    private string _decryptionOutput;
+
 
     public string Username { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
+        _encryptionOutput = EncryptionHandler.EncryptSymetrisk("Hi Oskar");
+        _decryptionOutput = EncryptionHandler.DecryptSymetrisk(_encryptionOutput);
 
-        Codes.HashingHandler hh = new("H1 Oskar");
+        HashingHandler hh = new("H1 Oskar");
         _md5 = hh.Md5Hashing(HashFormat.Base64);
         _sha256 = hh.Sha256Hashing(HashFormat.Utf);
         _hmac256 = hh.Hmac256Hashing(HashFormat.Hex);
@@ -75,10 +90,5 @@
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
         Username = user.Identity?.Name;
-    }
-
-    private async Task Submit()
-    {
-        ToDoService.AddCpr(Username, _inputCpr);
     }
 }

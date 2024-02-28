@@ -43,7 +43,7 @@
         Username = user.Identity?.Name;
         if(Username != null)
         {
-            Cpr = ToDoService.GetCpr(Username);
+            Cpr = await ToDoService.GetCpr(Username);
         }
 
     }

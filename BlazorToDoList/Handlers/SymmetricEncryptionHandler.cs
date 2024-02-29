@@ -5,9 +5,9 @@ public class SymmetricEncryptionHandler(IDataProtectionProvider dataProtectionPr
 {
     private readonly IDataProtector _dataProtector = dataProtectionProvider.CreateProtector("Password");
 
-    public string EncryptSymetrisk(string textToEncrypt) =>
+    public string EncryptSymmetric(string textToEncrypt) =>
         _dataProtector.Protect(textToEncrypt);
 
-    public string DecryptSymetrisk(string textToDecrypt) =>
+    public string DecryptSymmetric(string textToDecrypt) =>
         _dataProtector.Unprotect(textToDecrypt);
 }

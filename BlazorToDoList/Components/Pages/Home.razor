@@ -1,63 +1,11 @@
 ﻿@page "/"
 @using Microsoft.AspNetCore.Authorization
-@using BlazorToDoList.Handlers
 
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject SymmetricEncryptionHandler SymmetricEncryptionHandler
-@inject AsymmetricEncryptionHandler AsymmetricEncryptionHandler
 
 @attribute [Authorize(Policy = "AuthenticatedUser")]
 
 <PageTitle>Home</PageTitle>
 
-@if (_symetricEncryptionOutput != null)
-{
-    <p>Symmetric encryption - @_symetricEncryptionOutput</p>
-}
-
-@if (_symetricDecryptionOutput != null)
-{
-    <p>Symmetric decryption - @_symetricDecryptionOutput</p>
-}
-
-@if (_asymetricEncryptionOutput != null)
-{
-    <p>Asymmetric encryption - @_asymetricEncryptionOutput</p>
-}
-
-@if (_asymetricDecryptionOutput != null)
-{
-    <p>Asymmetric decryption - @_asymetricDecryptionOutput</p>
-}
-
-<h1>Username - @Username</h1>
-
 @code {
-    private string? _md5;
-    private string? _sha256;
-    private string? _hmac256;
-    private string? _pbkf2String;
-    private string? _pbkf2Array;
-    private string? _bcryptHashed;
-    private bool? _bcryptVerified;
-    private string _inputCpr;
-    private string _symetricEncryptionOutput;
-    private string _symetricDecryptionOutput;
-    private string _asymetricEncryptionOutput;
-    private string _asymetricDecryptionOutput;
 
-
-    public string Username { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        _symetricEncryptionOutput = SymmetricEncryptionHandler.EncryptSymetrisk("Hi Oskar");
-        _symetricDecryptionOutput = SymmetricEncryptionHandler.DecryptSymetrisk(_symetricEncryptionOutput);
-        _asymetricEncryptionOutput = AsymmetricEncryptionHandler.EncryptAsymmetric("Hi Oskar");
-        _asymetricDecryptionOutput = AsymmetricEncryptionHandler.DecryptAsymmetric(_asymetricEncryptionOutput);
-
-        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
-        var user = authState.User;
-        Username = user.Identity?.Name;
-    }
 }

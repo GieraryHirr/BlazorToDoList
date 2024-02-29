@@ -7,7 +7,7 @@ namespace BlazorToDoList.Services;
 
 public class ToDoService(
     IToDoRepository toDoRepository,
-    AsymmetricEncryptionHandler asymmetricEncryptionHandler)
+    SymmetricEncryptionHandler asymmetricEncryptionHandler)
     : IToDoService
 {
     public async Task<List<TodoList>> GetTasks(string username)
@@ -15,7 +15,7 @@ public class ToDoService(
         var encryptedToDoItems = await toDoRepository.GetTasksByUsername(username);
         encryptedToDoItems.ForEach(encryptedToDoItem =>
         {
-            encryptedToDoItem.Item = asymmetricEncryptionHandler.DecryptAsymmetric(encryptedToDoItem.Item);
+            encryptedToDoItem.Item = asymmetricEncryptionHandler.DecryptSymmetric(encryptedToDoItem.Item);
         });
 
         return encryptedToDoItems;
@@ -23,7 +23,7 @@ public class ToDoService(
 
     public async Task AddTask(string username, string task)
     {
-        var encryptedTask = asymmetricEncryptionHandler.EncryptAsymmetric(task);
+        var encryptedTask = asymmetricEncryptionHandler.EncryptSymmetric(task);
         var item = new TodoList
         {
             Item = encryptedTask,

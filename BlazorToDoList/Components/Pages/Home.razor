@@ -1,11 +1,10 @@
 ﻿@page "/"
-
 @using Microsoft.AspNetCore.Authorization
-@using BlazorToDoList.Codes
+@using BlazorToDoList.Handlers
 
 @inject AuthenticationStateProvider AuthenticationStateProvider
-@inject SymetricEncryptionHandler SymetricEncryptionHandler
-@inject AsymtericEncryptionHandler AsymetricEncryptionHandler
+@inject SymmetricEncryptionHandler SymmetricEncryptionHandler
+@inject AsymmetricEncryptionHandler AsymmetricEncryptionHandler
 
 @attribute [Authorize(Policy = "AuthenticatedUser")]
 
@@ -13,22 +12,22 @@
 
 @if (_symetricEncryptionOutput != null)
 {
-    <p>Symetric encryption - @_symetricEncryptionOutput</p>
+    <p>Symmetric encryption - @_symetricEncryptionOutput</p>
 }
 
 @if (_symetricDecryptionOutput != null)
 {
-    <p>Symetric decryption - @_symetricDecryptionOutput</p>
+    <p>Symmetric decryption - @_symetricDecryptionOutput</p>
 }
 
 @if (_asymetricEncryptionOutput != null)
 {
-    <p>Asymetric encryption - @_asymetricEncryptionOutput</p>
+    <p>Asymmetric encryption - @_asymetricEncryptionOutput</p>
 }
 
 @if (_asymetricDecryptionOutput != null)
 {
-    <p>Asymetric decryption - @_asymetricDecryptionOutput</p>
+    <p>Asymmetric decryption - @_asymetricDecryptionOutput</p>
 }
 
 <h1>Username - @Username</h1>
@@ -52,10 +51,10 @@
 
     protected override async Task OnInitializedAsync()
     {
-        _symetricEncryptionOutput = SymetricEncryptionHandler.EncryptSymetrisk("Hi Oskar");
-        _symetricDecryptionOutput = SymetricEncryptionHandler.DecryptSymetrisk(_symetricEncryptionOutput);
-        _asymetricEncryptionOutput = AsymetricEncryptionHandler.EncryptAsymteric("Hi Oskar");
-        _asymetricDecryptionOutput = AsymetricEncryptionHandler.DencryptAsymteric(_asymetricEncryptionOutput);
+        _symetricEncryptionOutput = SymmetricEncryptionHandler.EncryptSymetrisk("Hi Oskar");
+        _symetricDecryptionOutput = SymmetricEncryptionHandler.DecryptSymetrisk(_symetricEncryptionOutput);
+        _asymetricEncryptionOutput = AsymmetricEncryptionHandler.EncryptAsymmetric("Hi Oskar");
+        _asymetricDecryptionOutput = AsymmetricEncryptionHandler.DecryptAsymmetric(_asymetricEncryptionOutput);
 
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;

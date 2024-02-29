@@ -1,16 +1,16 @@
 ﻿using BlazorToDoList.Models;
 using BlazorToDoList.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorToDoList.Repositories;
-public class ToDoRepository : IToDoRepository
+public class ToDoRepository(TodoDbContext context) : IToDoRepository
 {
-    public Task<List<TodoList>> GetTasksByUsername(string username)
-    {
-        throw new NotImplementedException();
-    }
+    public async Task<List<TodoList>> GetTasksByUsername(string username) =>
+        await context.TodoLists.Where(c => c.User == username).AsNoTracking().ToListAsync();
 
-    public Task Add(TodoList toDo)
+    public async Task Add(TodoList toDo)
     {
-        throw new NotImplementedException();
+        context.TodoLists.Add(toDo);
+        await context.SaveChangesAsync();
     }
 }

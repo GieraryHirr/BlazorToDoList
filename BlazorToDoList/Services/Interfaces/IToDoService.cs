@@ -3,6 +3,6 @@
 namespace BlazorToDoList.Services.Interfaces;
 public interface IToDoService
 {
-    List<TodoList> GetTasks(int id);
+    Task<List<TodoList>> GetTasks(string username);
     Task AddTask(string username, string task);
 }

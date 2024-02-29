@@ -1,9 +1,9 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace BlazorToDoList.Codes;
+namespace BlazorToDoList.Helpers;
 
-public class AsymetricEncrypter
+public class AsymetricEncryptionHelper
 {
     public static string Encrypter(string textToEncrypt, string publicKey)
     {

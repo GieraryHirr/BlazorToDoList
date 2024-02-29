@@ -1,7 +1,7 @@
-using BlazorToDoList.Codes;
 using BlazorToDoList.Components;
 using BlazorToDoList.Components.Account;
 using BlazorToDoList.Data;
+using BlazorToDoList.Handlers;
 using BlazorToDoList.Models;
 using BlazorToDoList.Repositories;
 using BlazorToDoList.Repositories.Interfaces;
@@ -21,8 +21,8 @@ builder.Services.AddCascadingAuthenticationState();
 builder.Services.AddScoped<IdentityUserAccessor>();
 builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
-builder.Services.AddSingleton<SymetricEncryptionHandler>();
-builder.Services.AddSingleton<AsymtericEncryptionHandler>();
+builder.Services.AddSingleton<SymmetricEncryptionHandler>();
+builder.Services.AddSingleton<AsymmetricEncryptionHandler>();
 
 
 builder.Services.AddScoped<IToDoRepository, ToDoRepository>();

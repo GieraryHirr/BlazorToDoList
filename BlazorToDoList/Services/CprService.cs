@@ -1,8 +1,8 @@
 ﻿using BlazorToDoList.Enums;
 using BlazorToDoList.Models;
 using BlazorToDoList.Repositories.Interfaces;
-using BlazorToDoList.Handlers;
 using BlazorToDoList.Services.Interfaces;
+using BlazorToDoList.Helpers;
 
 namespace BlazorToDoList.Services;
 
@@ -16,7 +16,7 @@ public class CprService(ICprRepository cprRepository) : ICprService
 
     public async Task<string?> Add(string username, string cprNo)
     {
-        var newCprNoHashed = HashingHandler.Md5Hashing(cprNo, HashFormat.Base64);
+        var newCprNoHashed = HashingHelper.Md5Hashing(cprNo, HashFormat.Base64);
 
         var cpr = await cprRepository.GetCprByUsername(username);
         if (cpr != null )

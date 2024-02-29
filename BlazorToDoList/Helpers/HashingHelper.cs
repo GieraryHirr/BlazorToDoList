@@ -2,8 +2,8 @@
 using System.Security.Cryptography;
 using System.Text;
 
-namespace BlazorToDoList.Handlers;
-public static class HashingHandler
+namespace BlazorToDoList.Helpers;
+public static class HashingHelper
 {
     public static string Md5Hashing(string value, HashFormat format)
     {

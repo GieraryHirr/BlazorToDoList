@@ -1,29 +1,33 @@
-﻿using BlazorToDoList.Models;
+﻿using BlazorToDoList.Handlers;
+using BlazorToDoList.Models;
 using BlazorToDoList.Repositories.Interfaces;
 using BlazorToDoList.Services.Interfaces;
 
 namespace BlazorToDoList.Services;
 
 public class ToDoService(
-    IUserRepository userRepository,
-    IToDoRepository toDoRepository)
+    IToDoRepository toDoRepository,
+    AsymmetricEncryptionHandler asymmetricEncryptionHandler)
     : IToDoService
 {
-    public List<TodoList> GetTasks(int id)
+    public async Task<List<TodoList>> GetTasks(string username)
     {
-        throw new NotImplementedException();
+        var encryptedToDoItems = await toDoRepository.GetTasksByUsername(username);
+        encryptedToDoItems.ForEach(encryptedToDoItem =>
+        {
+            encryptedToDoItem.Item = asymmetricEncryptionHandler.DecryptAsymmetric(encryptedToDoItem.Item);
+        });
+
+        return encryptedToDoItems;
     }
 
     public async Task AddTask(string username, string task)
     {
-        var user = await userRepository.GetUserByUsername(username);
-
-        if (user == null) return;
-
+        var encryptedTask = asymmetricEncryptionHandler.EncryptAsymmetric(task);
         var item = new TodoList
         {
-            Item = task,
-            User = user.UserName!
+            Item = encryptedTask,
+            User = username
         };
 
         await toDoRepository.Add(item);
